@@ -5,8 +5,9 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:; connect-src 'self' https://api.anthropic.com https://api-free.deepl.com https://api.deepl.com https://cdn.jsdelivr.net;"
 
 [[headers]]
   for = "/.netlify/functions/*"
