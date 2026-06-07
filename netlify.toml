@@ -1,28 +1,3 @@
-Deployed! ✅ But I can see the issue — the functions are in a `functions2` folder, not `functions`. That's why they're not being found.
-
-Look at the deploy file browser:
-- `functions2` ← wrong name!
-- `lumio landing` ← wrong folder name!
-
-The folder names got spaces and wrong names when uploading. Let me fix the `netlify.toml` to match:
-
-**Go to GitHub → click `netlify.toml` → pencil icon → replace with:**
-
-```toml
 [build]
   publish = "/"
-  functions = "functions2"
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
-    Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:; connect-src 'self' https://api.anthropic.com https://cdn.jsdelivr.net;"
-
-[[headers]]
-  for = "/.netlify/functions/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-```
-
-Click **Commit** → Netlify redeploys → test! 🚀
+  functions = "functions"
