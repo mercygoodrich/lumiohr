@@ -359,7 +359,10 @@ footer{padding:40px;background:#111827;text-align:center;}
   .leave-balances{grid-template-columns:1fr 1fr;}
   .emp-hero{flex-direction:column;text-align:center;}
   .diff-main-grid{grid-template-columns:1fr !important;gap:20px !important;}
+  #pricing .pricing-grid{grid-template-columns:1fr !important;}
   footer{padding:24px 20px;}
+  #pricing-grid{grid-template-columns:1fr !important;}
+  #pricing{padding:48px 20px !important;}
   .waitlist-nudge{width:calc(100vw - 24px);right:12px;left:12px;bottom:72px;}
 }
 </style>
@@ -375,7 +378,7 @@ footer{padding:40px;background:#111827;text-align:center;}
   <div class="nav-links">
     <a class="nav-link" href="#how" id="t-nav-how">How it works</a>
     <a class="nav-link" href="#features" id="t-nav-feat">Features</a>
-    <a class="nav-link" href="https://tally.so/r/NpPo6B" target="_blank" id="t-nav-price">Pricing</a>
+    <a class="nav-link" href="#pricing" id="t-nav-price">Pricing</a>
   </div>
   <div class="lang-wrap" id="lang-wrap">
     <button class="lang-btn" onclick="toggleLang(event)">
@@ -430,7 +433,7 @@ footer{padding:40px;background:#111827;text-align:center;}
     </div>
   </div>
 <h1 id="t-hero-h1">HR that works as<br><em>hard as you do.</em></h1>
-  <p id="t-hero-p">The instant HR platform built for startups and small teams. Onboard globally, stay compliant, and get instant answers to any HR question — no HR department required.</p>
+  <p id="t-hero-p">The instant HR platform built for startups and small teams. Onboard globally, stay compliant, and get instant HR knowledge for any situation — in any country, at any hour.</p>
   <div class="hero-ctas">
     <button class="btn-hero-primary" onclick="openPlayground()"><span id="t-hero-btn1">✨ Try Lumio Free</span> <span id="t-hero-btn1-sub" style="opacity:0.7;font-size:13px;">— no signup needed</span></button>
     <a class="btn-hero-secondary" href="#how" id="t-hero-btn2">See how it works ↓</a>
@@ -477,7 +480,7 @@ footer{padding:40px;background:#111827;text-align:center;}
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div style="font-size:11px;font-weight:700;color:#10B981;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2px;"><span id="t-diff-points-label">What makes this different</span></div>
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:14px 16px;"><div style="font-size:18px;margin-bottom:6px;">💙</div><div style="font-size:14px;font-weight:700;color:#F1F5F9;margin-bottom:5px;"><span id="t-diff1-title">Responds like a human, not a database</span></div><div style="font-size:13px;color:rgba(241,245,249,0.65);line-height:1.6;"><span id="t-diff1-body">Asks one question at a time, remembers context, gives answers that feel human.</span></div></div>
-        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:14px 16px;"><div style="font-size:18px;margin-bottom:6px;">🌍</div><div style="font-size:14px;font-weight:700;color:#F1F5F9;margin-bottom:5px;"><span id="t-diff2-title">Every country, every situation</span></div><div style="font-size:13px;color:rgba(241,245,249,0.65);line-height:1.6;"><span id="t-diff2-body">Bereavement in Spain. Maternity in Japan. Termination in Brazil. Real answers.</span></div></div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:14px 16px;"><div style="font-size:18px;margin-bottom:6px;">🌍</div><div style="font-size:14px;font-weight:700;color:#F1F5F9;margin-bottom:5px;"><span id="t-diff2-title">Every country, every situation</span></div><div style="font-size:13px;color:rgba(241,245,249,0.65);line-height:1.6;"><span id="t-diff2-body">Bereavement in Spain. Maternity in Japan. Termination in Brazil. Real HR guidance, instantly.</span></div></div>
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:14px 16px;"><div style="font-size:18px;margin-bottom:6px;">⏰</div><div style="font-size:14px;font-weight:700;color:#F1F5F9;margin-bottom:5px;"><span id="t-diff3-title">Available at 11pm when you need it</span></div><div style="font-size:13px;color:rgba(241,245,249,0.65);line-height:1.6;"><span id="t-diff3-body">HR questions don't happen 9–5. Lumio is always there.</span></div></div>
         <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:14px 16px;"><div style="font-size:18px;margin-bottom:6px;">🔐</div><div style="font-size:14px;font-weight:700;color:#F1F5F9;margin-bottom:5px;"><span id="t-diff4-title">Private and secure</span></div><div style="font-size:13px;color:rgba(241,245,249,0.65);line-height:1.6;"><span id="t-diff4-body">Conversations never stored. Data never sold. 256-bit encrypted.</span></div></div>
       </div>
@@ -520,12 +523,12 @@ footer{padding:40px;background:#111827;text-align:center;}
     <div id="t-feat-h2" class="section-title" style="color:#fff;">Everything you need.<br>Nothing you don't.</div>
     <div id="t-feat-sub" class="section-sub" style="color:rgba(255,255,255,0.7);">Built for founders who are also the HR team.</div>
     <div class="features-grid">
-      <div class="feature-card"><div class="feature-icon">💬</div><h3 id="t-feat1-h">Ask Lumio</h3><p id="t-feat1-p">Your personal HR knowledge base, available 24/7. Ask anything about labor laws, benefits, termination, compliance — in plain language, for any country.</p><span class="feature-tag">Available now</span></div>
+      <div class="feature-card"><div class="feature-icon">💬</div><h3 id="t-feat1-h">Ask Lumio</h3><p id="t-feat1-p">Your personal HR knowledge base, available 24/7. Ask anything about HR — labor laws, benefits, termination, compliance — instant guidance in plain language, for any country.</p><span class="feature-tag">Available now</span></div>
       <div class="feature-card"><div class="feature-icon">👥</div><h3 id="t-feat2-h">Employee directory</h3><p id="t-feat2-p">A beautiful, searchable home for your team. Profiles, documents, employment history, and emergency contacts — all in one secure place.</p><span class="feature-tag">Core feature</span></div>
       <div class="feature-card"><div class="feature-icon">✅</div><h3 id="t-feat3-h">Smart onboarding</h3><p id="t-feat3-p">Onboarding checklists that adapt to the employee's country. Never miss a form, signature, or compliance step again.</p><span class="feature-tag">Core feature</span></div>
-      <div class="feature-card"><div class="feature-icon">🛡️</div><h3 id="t-feat4-h">Global compliance</h3><p id="t-feat4-p">Real-time monitoring across 180+ countries. Labor law changes, filing deadlines, and policy updates — Lumio keeps you one step ahead.</p><span class="feature-tag">Core feature</span></div>
+      <div class="feature-card"><div class="feature-icon">🛡️</div><h3 id="t-feat4-h">Global compliance</h3><p id="t-feat4-p">Real-time awareness across 180+ countries. Labor law changes, filing deadlines, and policy updates — Lumio keeps you informed and one step ahead.</p><span class="feature-tag">Core feature</span></div>
       <div class="feature-card"><div class="feature-icon">📅</div><h3 id="t-feat5-h">Time off management</h3><p id="t-feat5-p">Leave requests, approvals, and balances — with public holidays and entitlements pre-loaded for every country your team is in.</p><span class="feature-tag">Core feature</span></div>
-      <div class="feature-card"><div class="feature-icon">📄</div><h3 id="t-feat6-h">Document hub</h3><p id="t-feat6-p">66 legally compliant templates. Contracts, offer letters, termination notices — generated in seconds with private fields always protected.</p><span class="feature-tag">Core feature</span></div>
+      <div class="feature-card"><div class="feature-icon">📄</div><h3 id="t-feat6-h">Document hub</h3><p id="t-feat6-p">66 professionally drafted HR templates. Contracts, offer letters, termination notices — generated in seconds as a starting point, with private fields always protected.</p><span class="feature-tag">Core feature</span></div>
     </div>
   </div>
 </section>
@@ -571,6 +574,147 @@ footer{padding:40px;background:#111827;text-align:center;}
   </div>
 </section>
 
+
+<!-- PRICING -->
+<section style="padding:80px 40px;background:#FFFFFF;border-top:1px solid #E2E8F0;" id="pricing">
+  <div style="max-width:1060px;margin:0 auto;">
+    <div class="section-eyebrow" style="text-align:center;">Pricing</div>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(26px,4vw,42px);font-weight:800;color:#111827;text-align:center;margin-bottom:12px;letter-spacing:-1px;line-height:1.1;">One employment issue costs more than<br><span style="color:#059669;">a year of Lumio.</span></div>
+    <div style="font-size:16px;color:#64748B;text-align:center;margin-bottom:16px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.7;">Sleep better for $29 a month. No hidden fees. No per-seat nonsense. Cancel anytime.</div>
+
+    <!-- Founding member banner -->
+    <div style="background:linear-gradient(135deg,#111827,#1A2535);border-radius:12px;padding:14px 24px;text-align:center;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto;">
+      <div style="font-size:14px;color:rgba(255,255,255,0.9);line-height:1.6;">🎉 <strong style="color:#10B981;">Founding member offer:</strong> First 100 members lock in <strong style="color:#fff;">$19/mo Pro</strong> or <strong style="color:#fff;">$69/mo Business</strong> — forever. Never increases.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start;" id="pricing-grid">
+
+      <!-- FREE -->
+      <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:20px;padding:32px 28px;">
+        <div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Free</div>
+        <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:4px;">
+          <span style="font-size:48px;font-weight:800;color:#111827;letter-spacing:-2px;line-height:1;">$0</span>
+        </div>
+        <div style="font-size:13px;color:#94A3B8;margin-bottom:24px;">forever · no credit card ever</div>
+        <button onclick="openPlayground()" style="width:100%;padding:13px;background:#111827;color:#fff;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;margin-bottom:28px;transition:all 0.2s;" onmouseover="this.style.background='#1A2535'" onmouseout="this.style.background='#111827'">Try free now →</button>
+        <div style="display:flex;flex-direction:column;gap:11px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>10 questions/day to Ask Lumio</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Preview all 66 HR templates</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Countries hub — 180+ countries</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>1 user</div>
+          <div style="height:1px;background:#E2E8F0;margin:4px 0;"></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#CBD5E1;"><span style="flex-shrink:0;margin-top:1px;">✗</span>Download templates</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#CBD5E1;"><span style="flex-shrink:0;margin-top:1px;">✗</span>Admin dashboard</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#CBD5E1;"><span style="flex-shrink:0;margin-top:1px;">✗</span>Compliance alerts</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#CBD5E1;"><span style="flex-shrink:0;margin-top:1px;">✗</span>Team access</div>
+        </div>
+      </div>
+
+      <!-- PRO -->
+      <div style="background:#111827;border:2px solid #059669;border-radius:20px;padding:32px 28px;position:relative;box-shadow:0 24px 60px rgba(5,150,105,0.2);">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#059669;color:#fff;font-size:11px;font-weight:700;padding:5px 18px;border-radius:100px;letter-spacing:0.06em;white-space:nowrap;">MOST POPULAR</div>
+        <div style="font-size:12px;font-weight:700;color:#10B981;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Pro</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;margin-bottom:4px;">
+          <span style="font-size:48px;font-weight:800;color:#fff;letter-spacing:-2px;line-height:1;">$29</span>
+          <span style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:10px;">/month</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+          <span style="font-size:13px;color:rgba(255,255,255,0.4);text-decoration:line-through;">$29/mo</span>
+          <span style="background:rgba(16,185,129,0.2);color:#10B981;font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;">$19/mo founding price</span>
+        </div>
+        <button onclick="window.open('https://tally.so/r/NpPo6B','_blank')" style="width:100%;padding:13px;background:#059669;color:#fff;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;margin-bottom:28px;transition:all 0.2s;" onmouseover="this.style.background='#047857'" onmouseout="this.style.background='#059669'">Get founding price →</button>
+        <div style="display:flex;flex-direction:column;gap:11px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.85);"><span style="color:#10B981;flex-shrink:0;margin-top:1px;">✓</span>Unlimited questions to Ask Lumio</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.85);"><span style="color:#10B981;flex-shrink:0;margin-top:1px;">✓</span>Download all 66 HR templates</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.85);"><span style="color:#10B981;flex-shrink:0;margin-top:1px;">✓</span>Countries hub — 180+ countries</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.85);"><span style="color:#10B981;flex-shrink:0;margin-top:1px;">✓</span>Up to 10 team members</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.85);"><span style="color:#10B981;flex-shrink:0;margin-top:1px;">✓</span>Full admin dashboard</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.85);"><span style="color:#10B981;flex-shrink:0;margin-top:1px;">✓</span>Basic compliance alerts</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.85);"><span style="color:#10B981;flex-shrink:0;margin-top:1px;">✓</span>Email support</div>
+          <div style="height:1px;background:rgba(255,255,255,0.08);margin:4px 0;"></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.3);"><span style="flex-shrink:0;margin-top:1px;">✗</span>Custom branding</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:rgba(255,255,255,0.3);"><span style="flex-shrink:0;margin-top:1px;">✗</span>Lumio on your handbook</div>
+        </div>
+      </div>
+
+      <!-- BUSINESS -->
+      <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:20px;padding:32px 28px;">
+        <div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Business</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;margin-bottom:4px;">
+          <span style="font-size:48px;font-weight:800;color:#111827;letter-spacing:-2px;line-height:1;">$99</span>
+          <span style="font-size:14px;color:#94A3B8;margin-bottom:10px;">/month</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+          <span style="font-size:13px;color:#94A3B8;text-decoration:line-through;">$99/mo</span>
+          <span style="background:#D1FAE5;color:#047857;font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;">$69/mo founding price</span>
+        </div>
+        <button onclick="window.open('https://tally.so/r/NpPo6B','_blank')" style="width:100%;padding:13px;background:#059669;color:#fff;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;margin-bottom:28px;transition:all 0.2s;" onmouseover="this.style.background='#047857'" onmouseout="this.style.background='#059669'">Get founding price →</button>
+        <div style="display:flex;flex-direction:column;gap:11px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Everything in Pro</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Unlimited team members</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Custom company branding</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Lumio trained on your handbook</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Full real-time compliance alerts</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Custom HR document templates</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Direct line to our team</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#475569;"><span style="color:#059669;flex-shrink:0;margin-top:1px;">✓</span>Priority onboarding support</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Compare to competitors -->
+    <div style="margin-top:40px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;padding:24px;overflow-x:auto;">
+      <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.1em;text-align:center;margin-bottom:16px;">Why Lumio wins on price</div>
+      <table style="width:100%;min-width:400px;border-collapse:collapse;font-size:13px;">
+        <tr style="border-bottom:2px solid #E2E8F0;">
+          <td style="padding:8px 12px;font-weight:700;color:#111827;"></td>
+          <td style="padding:8px 12px;font-weight:700;color:#111827;text-align:center;">Lumio Pro</td>
+          <td style="padding:8px 12px;color:#94A3B8;text-align:center;">Rippling</td>
+          <td style="padding:8px 12px;color:#94A3B8;text-align:center;">BambooHR</td>
+          <td style="padding:8px 12px;color:#94A3B8;text-align:center;">Deel</td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;color:#475569;">Starting price</td>
+          <td style="padding:9px 12px;text-align:center;font-weight:700;color:#059669;">$29/mo</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">$8/user/mo</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">$6/user/mo</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">$599/mo</td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;color:#475569;">Talks to employees</td>
+          <td style="padding:9px 12px;text-align:center;">✅</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">❌</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">❌</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">❌</td>
+        </tr>
+        <tr style="border-bottom:1px solid #E2E8F0;">
+          <td style="padding:9px 12px;color:#475569;">Setup time</td>
+          <td style="padding:9px 12px;text-align:center;font-weight:700;color:#059669;">5 minutes</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">Weeks</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">Weeks</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">Days</td>
+        </tr>
+        <tr>
+          <td style="padding:9px 12px;color:#475569;">180+ countries</td>
+          <td style="padding:9px 12px;text-align:center;">✅</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">⚠️ Some</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">⚠️ Some</td>
+          <td style="padding:9px 12px;text-align:center;color:#94A3B8;">✅</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Enterprise CTA -->
+    <div style="margin-top:24px;text-align:center;padding:24px;background:linear-gradient(135deg,#111827,#1A2535);border-radius:14px;">
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">Need something bigger? 🏢</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:16px;">Custom enterprise plans for large teams, white labelling and dedicated support.</div>
+      <button onclick="window.location.href='mailto:hello@lumio-hr.com'" style="background:transparent;border:1.5px solid rgba(255,255,255,0.25);color:#fff;padding:10px 24px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.6)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.25)'">Talk to us → hello@lumio-hr.com</button>
+    </div>
+
+  </div>
+</section>
+
 <!-- WAITLIST -->
 <section class="waitlist" id="waitlist">
   <div class="waitlist-inner">
@@ -597,7 +741,10 @@ footer{padding:40px;background:#111827;text-align:center;}
     <a class="footer-link" href="https://tally.so/r/NpPo6B" target="_blank">Early access</a>
     <a class="footer-link" href="#" onclick="openPlayground();return false;">Try free</a>
   </div>
-  <div class="footer-copy" id="t-footer-copy">© 2026 Lumio HR. Built for founders, by founders.</div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.2);max-width:600px;margin:0 auto 12px;line-height:1.6;padding:0 20px;">
+Lumio HR provides general HR information and guidance for educational purposes only. It does not constitute legal advice. For specific legal matters, please consult a qualified employment lawyer in your jurisdiction.
+</div>
+<div class="footer-copy" id="t-footer-copy">© 2026 Lumio HR. Built for founders, by founders.</div>
 </footer>
 
 <!-- ══════════════════════════════════════
@@ -746,6 +893,7 @@ footer{padding:40px;background:#111827;text-align:center;}
             <div>
               <div style="font-size:14px;font-weight:700;color:#111827">Ask Lumio</div>
               <div style="font-size:12px;color:#059669;font-weight:600">● Online · 180+ countries · 40+ languages</div>
+            <div style="font-size:10px;color:#94A3B8;margin-top:2px;">For guidance only · Not legal advice</div>
             </div>
           </div>
           <div class="chat-topics">
