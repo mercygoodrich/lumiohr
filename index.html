@@ -467,10 +467,10 @@ footer{padding:40px;background:#111827;text-align:center;}
       <div>
         <div style="font-size:11px;font-weight:700;color:#10B981;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px;"><span id="t-diff-conv-label">A real conversation with Lumio</span></div>
         <div style="background:#1A2535;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;">
-          <div style="display:flex;justify-content:flex-end;"><div style="background:#1E3A50;border-radius:14px 14px 3px 14px;padding:11px 14px;max-width:85%;font-size:14px;color:#F1F5F9;line-height:1.5;">My dad just passed away last night. I don't know what to do.</div></div>
-          <div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:24px;line-height:1;flex-shrink:0;">🍀</span><div style="background:#243448;border:1px solid rgba(16,185,129,0.15);border-radius:3px 14px 14px 14px;padding:11px 14px;font-size:14px;color:#E2EAF2;line-height:1.6;">💙 I'm so sorry for your loss.<br><br>Which country are you based in?</div></div>
-          <div style="display:flex;justify-content:flex-end;"><div style="background:#1E3A50;border-radius:14px 14px 3px 14px;padding:11px 14px;font-size:14px;color:#F1F5F9;">Spain</div></div>
-          <div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:24px;line-height:1;flex-shrink:0;">🍀</span><div style="background:#243448;border:1px solid rgba(16,185,129,0.15);border-radius:3px 14px 14px 14px;padding:11px 14px;font-size:13px;color:#E2EAF2;line-height:1.7;"><strong style="color:#F1F5F9;">In Spain, you are entitled to 2 days paid bereavement leave</strong> — 4 days if travel required.<br><br><span style="color:#10B981;font-size:12px;">💙 Please take the time you need.</span></div></div>
+          <div style="display:flex;justify-content:flex-end;"><div style="background:#1E3A50;border-radius:14px 14px 3px 14px;padding:11px 14px;max-width:85%;font-size:14px;color:#F1F5F9;line-height:1.5;"><span id='t-chat1'>My dad just passed away last night. I don't know what to do.</span></div></div>
+          <div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:24px;line-height:1;flex-shrink:0;">🍀</span><div style="background:#243448;border:1px solid rgba(16,185,129,0.15);border-radius:3px 14px 14px 14px;padding:11px 14px;font-size:14px;color:#E2EAF2;line-height:1.6;"><span id='t-chat2'>💙 I'm so sorry for your loss.<br><br>Which country are you based in?</span></div></div>
+          <div style="display:flex;justify-content:flex-end;"><div style="background:#1E3A50;border-radius:14px 14px 3px 14px;padding:11px 14px;font-size:14px;color:#F1F5F9;"><span id='t-chat3'>Spain</span></div></div>
+          <div style="display:flex;gap:8px;align-items:flex-start;"><span style="font-size:24px;line-height:1;flex-shrink:0;">🍀</span><div style="background:#243448;border:1px solid rgba(16,185,129,0.15);border-radius:3px 14px 14px 14px;padding:11px 14px;font-size:13px;color:#E2EAF2;line-height:1.7;"><span id='t-chat4'><strong style="color:#F1F5F9;">In Spain, you are entitled to 2 days paid bereavement leave</strong> — 4 days if travel required.<br><br><span style="color:#10B981;font-size:12px;">💙 Please take the time you need.</span></span></div></div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:12px;">
@@ -1509,7 +1509,11 @@ var TRANSLATIONS = {
     sec4_h: 'Aislamiento de datos', sec4_p: 'Tus datos están completamente aislados de otras organizaciones.',
     sec5_h: 'Derecho a eliminar', sec5_p: 'Elimina tu cuenta y los datos se eliminan permanentemente.',
     sec6_h: 'Registros de auditoría', sec6_p: 'Historial completo de cada acción en tu cuenta.',
-    footer_copy: '© 2026 Lumio HR. Construido para fundadores, por fundadores.'
+    chat1: 'Mi papá falleció anoche. No sé qué hacer.',
+    chat2: "💙 Lo siento mucho por tu pérdida.<br><br>¿En qué país estás?",
+    chat3: 'España',
+    chat4: '<strong>En España, tienes derecho a 2 días de baja por duelo</strong> — 4 días si requiere viaje.<br><br><span style="color:#10B981;font-size:12px;">💙 Por favor tómate el tiempo que necesitas.</span>',
+            footer_copy: '© 2026 Lumio HR. Construido para fundadores, por fundadores.'
   },
   fr: {
     nav_how: 'Comment ça marche', nav_features: 'Fonctionnalités', nav_pricing: 'Tarifs', nav_cta: 'Essayer Lumio gratuitement →',
@@ -1558,7 +1562,11 @@ var TRANSLATIONS = {
     sec4_h: 'Isolation des données', sec4_p: 'Vos données sont totalement isolées des autres organisations.',
     sec5_h: 'Droit à la suppression', sec5_p: 'Supprimez votre compte et vos données sont effacées définitivement.',
     sec6_h: 'Journaux d\'audit', sec6_p: 'Traçabilité complète de chaque action dans votre compte.',
-    footer_copy: '© 2026 Lumio HR. Conçu pour les fondateurs, par des fondateurs.'
+    chat1: 'Mon père est décédé hier soir. Je ne sais pas quoi faire.',
+    chat2: "💙 Je suis vraiment désolé pour votre perte.<br><br>Dans quel pays êtes-vous ?",
+    chat3: 'Espagne',
+    chat4: '<strong>En Espagne, vous avez droit à 2 jours de congé de deuil</strong> — 4 jours si un déplacement est nécessaire.<br><br><span style="color:#10B981;font-size:12px;">💙 Prenez le temps dont vous avez besoin.</span>',
+            footer_copy: '© 2026 Lumio HR. Conçu pour les fondateurs, par des fondateurs.'
   },
   de: {
     nav_how: 'So funktioniert es', nav_features: 'Funktionen', nav_pricing: 'Preise', nav_cta: 'Lumio kostenlos testen →',
@@ -1607,7 +1615,11 @@ var TRANSLATIONS = {
     sec4_h: 'Datenisolation', sec4_p: 'Ihre Daten sind vollständig von anderen Organisationen isoliert.',
     sec5_h: 'Recht auf Löschung', sec5_p: 'Konto löschen und alle Daten werden dauerhaft entfernt.',
     sec6_h: 'Audit-Protokolle', sec6_p: 'Vollständige Aufzeichnung jeder Aktion in Ihrem Konto.',
-    footer_copy: '© 2026 Lumio HR. Für Gründer gebaut, von Gründern.'
+    chat1: 'Mein Vater ist gestern Nacht gestorben. Ich weiß nicht, was ich tun soll.',
+    chat2: "💙 Es tut mir sehr leid für Ihren Verlust.<br><br>In welchem Land befinden Sie sich?",
+    chat3: 'Spanien',
+    chat4: '<strong>In Spanien haben Sie Anspruch auf 2 Tage bezahlten Trauerurlaub</strong> — 4 Tage bei Reisebedarf.<br><br><span style="color:#10B981;font-size:12px;">💙 Nehmen Sie sich die Zeit, die Sie brauchen.</span>',
+            footer_copy: '© 2026 Lumio HR. Für Gründer gebaut, von Gründern.'
   },
   pt: {
     nav_how: 'Como funciona', nav_features: 'Funcionalidades', nav_pricing: 'Preços', nav_cta: 'Experimentar Lumio grátis →',
@@ -1655,7 +1667,11 @@ var TRANSLATIONS = {
     sec4_h: 'Isolamento de dados', sec4_p: 'Seus dados são totalmente isolados de outras organizações.',
     sec5_h: 'Direito de exclusão', sec5_p: 'Exclua sua conta e todos os dados são removidos permanentemente.',
     sec6_h: 'Registros de auditoria', sec6_p: 'Histórico completo de cada ação na sua conta.',
-    footer_copy: '© 2026 Lumio HR. Construído para fundadores, por fundadores.'
+    chat1: 'Meu pai faleceu ontem à noite. Não sei o que fazer.',
+    chat2: "💙 Sinto muito pela sua perda.<br><br>Em qual país você está?",
+    chat3: 'Espanha',
+    chat4: '<strong>Na Espanha, você tem direito a 2 dias de licença por luto</strong> — 4 dias se precisar de viagem.<br><br><span style="color:#10B981;font-size:12px;">💙 Por favor, tome o tempo que precisar.</span>',
+            footer_copy: '© 2026 Lumio HR. Construído para fundadores, por fundadores.'
   },
   it: {
     nav_how: 'Come funziona', nav_features: 'Funzionalità', nav_pricing: 'Prezzi', nav_cta: 'Prova Lumio gratis →',
@@ -1703,7 +1719,11 @@ var TRANSLATIONS = {
     sec4_h: 'Isolamento dati', sec4_p: 'I tuoi dati sono completamente isolati dalle altre organizzazioni.',
     sec5_h: 'Diritto alla cancellazione', sec5_p: 'Elimina l\'account e i dati vengono rimossi definitivamente.',
     sec6_h: 'Log di audit', sec6_p: 'Traccia completa di ogni azione nel tuo account.',
-    footer_copy: '© 2026 Lumio HR. Costruito per fondatori, da fondatori.'
+    chat1: 'Mio padre è morto ieri sera. Non so cosa fare.',
+    chat2: "💙 Mi dispiace molto per la tua perdita.<br><br>In quale paese sei?",
+    chat3: 'Spagna',
+    chat4: '<strong>In Spagna hai diritto a 2 giorni di congedo per lutto</strong> — 4 giorni se è necessario viaggiare.<br><br><span style="color:#10B981;font-size:12px;">💙 Prenditi il tempo di cui hai bisogno.</span>',
+            footer_copy: '© 2026 Lumio HR. Costruito per fondatori, da fondatori.'
   },
   nl: {
     nav_how: 'Hoe het werkt', nav_features: 'Functies', nav_pricing: 'Prijzen', nav_cta: 'Lumio gratis proberen →',
@@ -1751,7 +1771,11 @@ var TRANSLATIONS = {
     sec4_h: 'Data-isolatie', sec4_p: 'Uw gegevens zijn volledig geïsoleerd van andere organisaties.',
     sec5_h: 'Recht op verwijdering', sec5_p: 'Verwijder uw account en alle gegevens worden permanent gewist.',
     sec6_h: 'Auditlogboeken', sec6_p: 'Volledig auditspoor van elke actie in uw account.',
-    footer_copy: '© 2026 Lumio HR. Gebouwd voor oprichters, door oprichters.'
+    chat1: 'Mijn vader is gisteravond overleden. Ik weet niet wat ik moet doen.',
+    chat2: "💙 Mijn oprechte condoleances met uw verlies.<br><br>In welk land bevindt u zich?",
+    chat3: 'Spanje',
+    chat4: '<strong>In Spanje heeft u recht op 2 dagen betaald rouwverlof</strong> — 4 dagen als reizen nodig is.<br><br><span style="color:#10B981;font-size:12px;">💙 Neem de tijd die u nodig heeft.</span>',
+            footer_copy: '© 2026 Lumio HR. Gebouwd voor oprichters, door oprichters.'
   }
 };
 
@@ -1810,6 +1834,7 @@ function applyTranslation(code) {
   sp('waitlist-email', T.wl_placeholder); s('t-wl-btn', T.wl_btn); s('t-wl-success', T.wl_success);
   // Footer
   s('t-footer-copy', T.footer_copy);
+  if(T.chat1){s('t-chat1',T.chat1);s('t-chat2',T.chat2);s('t-chat3',T.chat3);s('t-chat4',T.chat4);}
   if(T.sec1_h){
     s('t-sec1-h',T.sec1_h);s('t-sec1-p',T.sec1_p);
     s('t-sec2-h',T.sec2_h);s('t-sec2-p',T.sec2_p);
