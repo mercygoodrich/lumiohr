@@ -301,6 +301,7 @@ footer{padding:40px;background:#111827;text-align:center;}
   .hero-ctas{flex-direction:column;align-items:center;}
   .btn-hero-primary,.btn-hero-secondary{width:100%;max-width:340px;justify-content:center;font-size:15px;padding:14px 20px;}
   .hero-proof{justify-content:center;flex-wrap:wrap;gap:8px;}
+  #mobile-lang-bar{display:flex !important;}
   .how,.features,.playground-cta,.waitlist{padding:48px 20px;}
   .section-title{font-size:26px;}
   .section-sub{font-size:15px;margin-bottom:28px;}
@@ -426,6 +427,31 @@ footer{padding:40px;background:#111827;text-align:center;}
     <div style="flex:1;min-width:130px;max-width:180px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px;text-align:center;">
       <div id="t-stat3-val" style="font-size:34px;font-weight:800;color:#10B981;letter-spacing:-1px;line-height:1;">$0</div>
       <div id="t-stat3-label" style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:6px;">To try free</div>
+    </div>
+  </div>
+
+  <!-- MOBILE LANGUAGE BAR — visible on mobile only -->
+  <div id="mobile-lang-bar" style="display:none;margin-top:32px;flex-wrap:wrap;justify-content:center;gap:8px;">
+    <div onclick="mobileLang('en','EN','gb')" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;cursor:pointer;" id="mlb-en">
+      <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/gb.svg" width="18" height="14" style="border-radius:2px;"><span style="font-size:12px;font-weight:600;color:#fff;">EN</span>
+    </div>
+    <div onclick="mobileLang('es','ES','es')" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;cursor:pointer;" id="mlb-es">
+      <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/es.svg" width="18" height="14" style="border-radius:2px;"><span style="font-size:12px;font-weight:600;color:#fff;">ES</span>
+    </div>
+    <div onclick="mobileLang('fr','FR','fr')" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;cursor:pointer;" id="mlb-fr">
+      <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/fr.svg" width="18" height="14" style="border-radius:2px;"><span style="font-size:12px;font-weight:600;color:#fff;">FR</span>
+    </div>
+    <div onclick="mobileLang('de','DE','de')" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;cursor:pointer;" id="mlb-de">
+      <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/de.svg" width="18" height="14" style="border-radius:2px;"><span style="font-size:12px;font-weight:600;color:#fff;">DE</span>
+    </div>
+    <div onclick="mobileLang('pt','PT','br')" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;cursor:pointer;" id="mlb-pt">
+      <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/br.svg" width="18" height="14" style="border-radius:2px;"><span style="font-size:12px;font-weight:600;color:#fff;">PT</span>
+    </div>
+    <div onclick="mobileLang('it','IT','it')" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;cursor:pointer;" id="mlb-it">
+      <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/it.svg" width="18" height="14" style="border-radius:2px;"><span style="font-size:12px;font-weight:600;color:#fff;">IT</span>
+    </div>
+    <div onclick="mobileLang('nl','NL','nl')" style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;cursor:pointer;" id="mlb-nl">
+      <img src="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/nl.svg" width="18" height="14" style="border-radius:2px;"><span style="font-size:12px;font-weight:600;color:#fff;">NL</span>
     </div>
   </div>
 </section>
@@ -1793,6 +1819,18 @@ function applyTranslation(code) {
   }
 }
 
+
+function mobileLang(code, label, fc) {
+  // Update active state
+  ['en','es','fr','de','pt','it','nl'].forEach(function(l) {
+    var el = document.getElementById('mlb-'+l);
+    if(el) el.style.background = 'rgba(255,255,255,0.1)';
+    if(el) el.style.borderColor = 'rgba(255,255,255,0.2)';
+  });
+  var active = document.getElementById('mlb-'+code);
+  if(active) { active.style.background = 'rgba(5,150,105,0.4)'; active.style.borderColor = '#059669'; }
+  applyTranslation(code);
+}
 // LANGUAGE
 function toggleLang(e){e.stopPropagation();var m=document.getElementById('lang-menu');m.classList.toggle('show');}
 document.addEventListener('click',function(){var m=document.getElementById('lang-menu');if(m)m.classList.remove('show');});
