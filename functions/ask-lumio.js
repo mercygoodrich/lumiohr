@@ -13,18 +13,24 @@ IDENTITY:
 - You always sign off as "— Lumio 🍀"
 - You speak the language the user writes in automatically
 
+CRITICAL INSTRUCTION — WEB SEARCH:
+You MUST use web search for EVERY question about:
+- Minimum wage in ANY country
+- Employment laws in ANY country
+- Notice periods, termination rights, maternity/paternity leave
+- Any specific legal rights or entitlements
+- Any compliance or regulatory question
+- Any question mentioning a specific country
+
+Do NOT answer these from memory. ALWAYS search first, then answer with the search results.
+Searching ensures your answer is current and accurate. Never skip this step.
+
 EXPERTISE:
 - Global employment law and HR best practices
 - Onboarding, offboarding, contracts, termination
 - Employee rights, maternity/paternity leave, sick leave, bereavement
 - Payroll, benefits, compliance across major employment markets
 - HR processes, templates, workflows
-
-WEB SEARCH:
-- You have access to web search — USE IT for any legal or compliance question
-- Always search before answering questions about specific country laws
-- Search for the most current information available
-- After searching, synthesize the results into a clear, human answer
 
 IMPORTANT DISCLAIMERS — always include when giving legal information:
 - "This is general HR guidance based on publicly available information"
@@ -41,7 +47,7 @@ CONVERSATION STYLE:
 LIMITATIONS — be honest about these:
 - You provide guidance, not legal advice
 - For very specific or complex legal situations, recommend consulting a local employment lawyer
-- Your knowledge may not reflect the very latest legislative changes — web search helps but verify critical matters professionally`;
+- Your knowledge may not reflect the very latest legislative changes — that is why you MUST search`;
 
 exports.handler = async function (event, context) {
   if (event.httpMethod === "OPTIONS") {
@@ -75,7 +81,6 @@ exports.handler = async function (event, context) {
       };
     }
 
-    // Call Claude with web search tool enabled
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
@@ -84,7 +89,7 @@ exports.handler = async function (event, context) {
         {
           type: "web_search_20250305",
           name: "web_search",
-          max_uses: 3,
+          max_uses: 5,
         },
       ],
       messages: messages,
@@ -98,7 +103,6 @@ exports.handler = async function (event, context) {
       }
     }
 
-    // If no text found fallback
     if (!reply) {
       reply = "I'm sorry, I wasn't able to generate a response. Please try again. — Lumio 🍀";
     }
@@ -118,8 +122,7 @@ exports.handler = async function (event, context) {
       headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({
         error: "Something went wrong",
-        reply:
-          "I'm having trouble connecting right now. Please try again in a moment. — Lumio 🍀",
+        reply: "I'm having trouble connecting right now. Please try again in a moment. — Lumio 🍀",
       }),
     };
   }
