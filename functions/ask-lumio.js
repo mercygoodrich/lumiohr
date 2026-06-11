@@ -1,168 +1,183 @@
-/**
- * Lumio Sprint 1 — ask-lumio function
- * ------------------------------------
- * The Company Brain. Answers questions using ONLY the company's
- * uploaded documents, with source citations, and refuses to answer
- * when the documents don't contain the information.
- *
- * Flow:
- *   1. Embed the user's question with Voyage
- *   2. Retrieve the most relevant chunks from Supabase (match_chunks RPC)
- *   3. Ask Claude to answer using ONLY those chunks
- *   4. Return the answer + the source filenames used
- */
-
 const Anthropic = require("@anthropic-ai/sdk");
-const { createClient } = require("@supabase/supabase-js");
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
-// The seeded company. (Sprint 1 = single company.)
-// Replace this with the COMPANY_ID printed by the seed script.
-const COMPANY_ID = process.env.LUMIO_COMPANY_ID || "REPLACE_WITH_COMPANY_ID";
+// Simple in-memory rate limiter — 20 messages per IP per day
+const rateLimits = {};
 
-const SIMILARITY_FLOOR = 0.4; // below this, treat as "not found"
-
-const SYSTEM_PROMPT = `You are Lumio, a company knowledge assistant.
-
-STRICT RULES:
-- Answer ONLY using the information in the COMPANY DOCUMENTS provided below.
-- If the answer is not in the documents, say exactly: "I don't have that information in your company documents." Do not guess, infer, or use outside knowledge.
-- Never invent numbers, dates, or policies.
-- Keep answers short, clear, and factual.
-- After your answer, do not list sources yourself — the system adds citations automatically.
-
-Be warm but concise. Sign off with "— Lumio 🍀"`;
-
-async function embedQuestion(question) {
-  const res = await fetch("https://api.voyageai.com/v1/embeddings", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,
-    },
-    body: JSON.stringify({
-      input: [question],
-      model: "voyage-3-lite",
-      input_type: "query",
-    }),
+function checkRateLimit(ip) {
+  const today = new Date().toISOString().split("T")[0];
+  const key = `${ip}_${today}`;
+  Object.keys(rateLimits).forEach((k) => {
+    if (!k.endsWith(today)) delete rateLimits[k];
   });
-  if (!res.ok) {
-    throw new Error(`Voyage embed failed (${res.status}): ${await res.text()}`);
-  }
-  const data = await res.json();
-  return data.data[0].embedding;
+  if (!rateLimits[key]) rateLimits[key] = 0;
+  rateLimits[key]++;
+  return rateLimits[key] <= 20;
 }
 
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Content-Type": "application/json",
-};
+const SYSTEM_PROMPT = `You are Lumio, an expert HR knowledge assistant built into Lumio HR — a platform for global teams and founders.
+
+IDENTITY:
+- You are warm, human, and empathetic — never robotic or cold
+- You acknowledge emotions before giving information
+- You are a neutral mediator — never taking sides between employer and employee
+- You always sign off as "— Lumio 🍀"
+- You speak the language the user writes in automatically
+
+CRITICAL INSTRUCTION — WEB SEARCH:
+You MUST use web search for EVERY question about:
+- Minimum wage in ANY country
+- Employment laws in ANY country
+- Notice periods, termination rights, maternity/paternity leave
+- Any specific legal rights or entitlements
+- Any compliance or regulatory question
+- Any question mentioning a specific country
+Do NOT answer these from memory. ALWAYS search first, then answer with current results.
+
+FORMATTING — ALWAYS format your answers like this:
+- Start with a one-line warm, human summary of the answer
+- Use bullet points (•) never dashes (-) for lists
+- Use relevant emojis to separate sections:
+  💰 for wages and pay
+  📋 for rules and requirements
+  📅 for dates and deadlines
+  ⚠️ for exceptions or important warnings
+  🌍 for country-specific info
+  👶 for maternity/paternity
+  🏥 for sick leave
+  ✅ for what is allowed
+  ❌ for what is not allowed
+  💡 for tips and advice
+- Keep sentences short and clear
+- Never use dashes as bullet points
+- Add a blank line between sections
+- End with the disclaimer and sign off
+
+EXPERTISE:
+- Global employment law and HR best practices
+- Onboarding, offboarding, contracts, termination
+- Employee rights, maternity/paternity leave, sick leave, bereavement
+- Payroll, benefits, compliance across major employment markets
+
+CONVERSATION STYLE:
+- Ask one clarifying question at a time if needed
+- Keep answers clear and in plain language — no legal jargon
+- Be warm and reassuring, especially for sensitive topics
+- For emotional situations acknowledge feelings first
+
+DISCLAIMER: Always end legal/country answers with:
+"This is general HR guidance based on publicly available information. Laws change frequently — always verify with a qualified employment lawyer.
+
+— Lumio 🍀"`;
 
 exports.handler = async function (event) {
   if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 200, headers: CORS, body: "" };
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+      },
+      body: "",
+    };
   }
+
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: CORS, body: JSON.stringify({ error: "Method not allowed" }) };
+    return {
+      statusCode: 405,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({ error: "Method not allowed" }),
+    };
+  }
+
+  const ip =
+    event.headers["x-forwarded-for"] ||
+    event.headers["client-ip"] ||
+    "unknown";
+  const cleanIp = ip.split(",")[0].trim();
+
+  if (!checkRateLimit(cleanIp)) {
+    return {
+      statusCode: 429,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({
+        error: "Rate limit reached",
+        reply:
+          "You've reached the daily limit of 20 free messages. Upgrade to Pro for unlimited access at lumio-hr.com 🍀",
+      }),
+    };
   }
 
   try {
-    const body = JSON.parse(event.body || "{}");
-    // Accept either { question } or { messages: [...] }
-    const question =
-      body.question ||
-      (Array.isArray(body.messages) && body.messages.length
-        ? body.messages[body.messages.length - 1].content
-        : null);
+    const { messages } = JSON.parse(event.body);
 
-    if (!question || typeof question !== "string") {
-      return { statusCode: 400, headers: CORS, body: JSON.stringify({ error: "Missing question" }) };
-    }
-    if (question.length > 1000) {
+    if (!messages || !Array.isArray(messages)) {
       return {
         statusCode: 400,
-        headers: CORS,
-        body: JSON.stringify({ reply: "Please keep questions under 1000 characters. — Lumio 🍀" }),
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: JSON.stringify({ error: "Invalid messages format" }),
       };
     }
 
-    // 1. Embed the question
-    const queryEmbedding = await embedQuestion(question);
-
-    // 2. Retrieve relevant chunks
-    const { data: matches, error: matchErr } = await supabase.rpc("match_chunks", {
-      query_embedding: queryEmbedding,
-      match_company_id: COMPANY_ID,
-      match_count: 5,
-    });
-    if (matchErr) throw matchErr;
-
-    // Filter by similarity floor — if nothing clears it, refuse.
-    const relevant = (matches || []).filter((m) => m.similarity >= SIMILARITY_FLOOR);
-
-    if (relevant.length === 0) {
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg && lastMsg.content && lastMsg.content.length > 1000) {
       return {
-        statusCode: 200,
-        headers: CORS,
+        statusCode: 400,
+        headers: { "Access-Control-Allow-Origin": "*" },
         body: JSON.stringify({
-          reply: "I don't have that information in your company documents. — Lumio 🍀",
-          sources: [],
+          error: "Message too long",
+          reply: "Please keep messages under 1000 characters. — Lumio 🍀",
         }),
       };
     }
 
-    // Get source filenames for the matched chunks
-    const docIds = [...new Set(relevant.map((m) => m.document_id))];
-    const { data: docs } = await supabase
-      .from("documents")
-      .select("id, filename")
-      .in("id", docIds);
-    const filenameById = {};
-    (docs || []).forEach((d) => (filenameById[d.id] = d.filename));
-
-    // 3. Build context and ask Claude
-    const context = relevant
-      .map((m, i) => `[Source ${i + 1}: ${filenameById[m.document_id] || "document"}]\n${m.content}`)
-      .join("\n\n---\n\n");
-
-    const userMessage = `COMPANY DOCUMENTS:\n\n${context}\n\n---\n\nQUESTION: ${question}`;
-
-    const response = await anthropic.messages.create({
+    const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 512,
+      max_tokens: 1024,
       system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: userMessage }],
+      tools: [
+        {
+          type: "web_search_20250305",
+          name: "web_search",
+          max_uses: 5,
+        },
+      ],
+      messages: messages.slice(-10),
     });
 
     let reply = "";
     for (const block of response.content) {
-      if (block.type === "text") reply += block.text;
+      if (block.type === "text") {
+        reply += block.text;
+      }
     }
-    if (!reply) reply = "I couldn't generate a response. Please try again. — Lumio 🍀";
 
-    // 4. Unique source filenames for citation display
-    const sources = [...new Set(relevant.map((m) => filenameById[m.document_id]).filter(Boolean))];
+    if (!reply) {
+      reply =
+        "I'm sorry, I wasn't able to generate a response. Please try again. — Lumio 🍀";
+    }
 
     return {
       statusCode: 200,
-      headers: CORS,
-      body: JSON.stringify({ reply, sources }),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reply }),
     };
   } catch (error) {
     console.error("Lumio error:", error);
     return {
       statusCode: 500,
-      headers: CORS,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify({
-        reply: "I'm having trouble right now. Please try again in a moment. — Lumio 🍀",
-        error: error.message,
+        error: "Something went wrong",
+        reply:
+          "I'm having trouble connecting right now. Please try again in a moment. — Lumio 🍀",
       }),
     };
   }
