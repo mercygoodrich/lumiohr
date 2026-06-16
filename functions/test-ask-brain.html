@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Lumio Brain — Company HR Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #f5f3ff 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #059669;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            margin-bottom: 24px;
+        }
+
+        .role-selector {
+            margin-bottom: 24px;
+        }
+
+        .role-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #059669;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .role-btn {
+            padding: 10px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .role-btn:hover {
+            border-color: #059669;
+            color: #059669;
+        }
+
+        .role-btn.active {
+            background: #059669;
+            border-color: #059669;
+            color: white;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #059669;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+            background: #f0fdf4;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #059669;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #047857;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        .response-section {
+            margin-top: 32px;
+            display: none;
+        }
+
+        .response-section.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .response-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: #059669;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .response-content {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #059669;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #059669;
+            font-size: 14px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #059669;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee2e2;
+            border-left-color: #dc2626;
+            color: #7f1d1d;
+        }
+
+        .info-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .info-box strong {
+            color: #059669;
+        }
+
+        .role-info {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 8px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🍀</div>
+            <h1>Lumio Brain</h1>
+            <p class="tagline">Company HR Knowledge System</p>
+            <p class="subtitle">Tailored answers for employees, managers, and HR</p>
+        </header>
+
+        <div class="card">
+            <div class="info-box">
+                <strong>Select your role below, then ask a question.</strong> Lumio Brain tailors its response to your role and needs.
+            </div>
+
+            <div class="role-selector">
+                <label class="role-label">Your Role</label>
+                <div class="role-buttons">
+                    <button class="role-btn active" onclick="setRole('employee')">👤 Employee</button>
+                    <button class="role-btn" onclick="setRole('manager')">👔 Manager</button>
+                    <button class="role-btn" onclick="setRole('admin')">👩‍💼 HR / Admin</button>
+                </div>
+                <div class="role-info" id="roleInfo">
+                    Employee: Get personalized HR guidance and know your rights
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="question">Your Question</label>
+                <textarea id="question" placeholder="Example: What PTO entitlement does Maria Garcia have?
+
+Or: As a manager, how do I approve time off requests?
+
+Or: Are we compliant with Spain's labor laws for remote work?"></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-primary" onclick="askQuestion()">Ask Lumio Brain</button>
+                <button class="btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+
+            <div class="loading" id="loading">
+                <span class="spinner"></span> Thinking...
+            </div>
+
+            <div class="response-section" id="responseSection">
+                <div class="response-header">Answer</div>
+                <div id="roleBadge"></div>
+                <div class="response-content" id="responseContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRole = "employee";
+
+        // Replace with your actual Netlify function URL
+        const ASK_BRAIN_URL = "https://lumiohr.netlify.app/.netlify/functions/ask-brain";
+
+        function setRole(role) {
+            currentRole = role;
+
+            // Update button states
+            document.querySelectorAll(".role-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
+            event.target.classList.add("active");
+
+            // Update role info
+            const roleInfo = {
+                employee: "👤 Employee: Get personalized HR guidance and know your rights",
+                manager: "👔 Manager: Understand approval workflows and team guidelines",
+                admin: "👩‍💼 HR / Admin: Spot compliance gaps and improve policies"
+            };
+            document.getElementById("roleInfo").textContent = roleInfo[role];
+        }
+
+        async function askQuestion() {
+            const question = document.getElementById("question").value.trim();
+            
+            if (!question) {
+                alert("Please enter a question");
+                return;
+            }
+
+            const loading = document.getElementById("loading");
+            const responseSection = document.getElementById("responseSection");
+            const responseContent = document.getElementById("responseContent");
+            const roleBadge = document.getElementById("roleBadge");
+
+            // Show loading
+            loading.classList.add("active");
+            responseSection.classList.remove("active");
+
+            try {
+                const response = await fetch(ASK_BRAIN_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        question: question,
+                        role: currentRole
+                    })
+                });
+
+                const data = await response.json();
+
+                // Hide loading
+                loading.classList.remove("active");
+
+                if (data.error) {
+                    responseContent.textContent = `Error: ${data.reply || data.error}`;
+                    responseContent.parentElement.classList.add("error");
+                } else {
+                    const roleTitles = {
+                        employee: "Employee Guidance",
+                        manager: "Manager Guidance",
+                        admin: "HR / Admin Guidance"
+                    };
+                    roleBadge.innerHTML = `<span class="role-badge">${roleTitles[currentRole]}</span>`;
+                    responseContent.textContent = data.reply;
+                    responseContent.parentElement.classList.remove("error");
+                    
+                    // Show response
+                    responseSection.classList.add("active");
+                }
+
+            } catch (error) {
+                loading.classList.remove("active");
+                responseContent.textContent = `Connection error: ${error.message}. Make sure the ask-brain function URL is correct.`;
+                responseContent.parentElement.classList.add("error");
+                responseSection.classList.add("active");
+            }
+        }
+
+        function clearForm() {
+            document.getElementById("question").value = "";
+            document.getElementById("responseSection").classList.remove("active");
+            document.getElementById("loading").classList.remove("active");
+        }
+
+        // Allow Ctrl+Enter to submit
+        document.getElementById("question").addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && e.ctrlKey) {
+                askQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
