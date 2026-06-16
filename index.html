@@ -378,7 +378,7 @@ footer{padding:40px;background:#111827;text-align:center;}
 <!-- NAV -->
 <nav class="nav" id="main-nav">
   <a class="logo" href="#" onclick="return false">
-    <span class="logo-text">LumioHR<span>HR</span></span>
+    <span class="logo-text"><span style="color:#059669;">Lumio</span><span style="color:#ffffff;">HR</span></span>
   </a>
   <div class="nav-links">
     <a class="nav-link" href="#how" id="t-nav-how">How it works</a>
@@ -467,7 +467,7 @@ footer{padding:40px;background:#111827;text-align:center;}
 </section>
 
 <!-- DIFFERENTIATOR -->
-<section style="padding:80px 24px;background:#FBF6EE;position:relative;overflow:hidden;">
+<section id="why" style="padding:80px 24px;background:#FBF6EE;position:relative;overflow:hidden;">
   <div style="max-width:1000px;margin:0 auto;position:relative;z-index:1;">
     <div id="t-diff-eyebrow" class="section-eyebrow" style="text-align:center;">Why LumioHR is different</div>
     <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(26px,4vw,46px);font-weight:800;color:#111827;text-align:center;margin-bottom:14px;line-height:1.1;letter-spacing:-1px;"><span id="t-diff-h2">HR platforms talk to companies.<br><em style="color:#059669;font-style:normal;">LumioHR talks to people.</em></span></div>
@@ -563,7 +563,7 @@ footer{padding:40px;background:#111827;text-align:center;}
       <div class="chat-messages" id="cc-msgs" style="height:360px;"></div>
       <div class="chat-input-area">
         <div class="chat-input-row">
-          <textarea class="chat-textarea" id="cc-input" placeholder="Ask <span style="color:#059669;">Lumio</span><span style="color:#10B981;">HR</span> anything..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();ccSend();}"></textarea>
+          <textarea class="chat-textarea" id="cc-input" placeholder="Ask LumioHR anything..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();ccSend();}"></textarea>
           <button class="chat-send" onclick="ccSend()">➤</button>
         </div>
       </div>
@@ -577,7 +577,7 @@ footer{padding:40px;background:#111827;text-align:center;}
 </section>
 
 <!-- SECURITY -->
-<section style="padding:80px 40px;background:#F4ECDE;border-top:1px solid #EADFCE;">
+<section id="security" style="padding:80px 40px;background:#F4ECDE;border-top:1px solid #EADFCE;">
   <div style="max-width:900px;margin:0 auto;text-align:center;">
     <div id="t-sec-eyebrow" class="section-eyebrow">Enterprise ready</div>
     <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(24px,3.5vw,38px);font-weight:800;color:#111827;margin-bottom:12px;letter-spacing:-1px;line-height:1.1;"><span id="t-sec-h2">Your data is safe with us.</span></div>
@@ -1513,7 +1513,7 @@ function appendMsg(role,text){
   if(role==='bot'){av.innerHTML='<span style="font-size:18px;line-height:1;">🍀</span>';}
   else{av.style.cssText='width:30px;height:30px;border-radius:50%;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;';av.textContent='U';}
   var bubble=document.createElement('div');bubble.className='msg-bubble';
-  bubble.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:10px;">').replace(/\n/g,'<br>');
+  var html=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');bubble.innerHTML=html;
   div.appendChild(av);div.appendChild(bubble);msgs.appendChild(div);
   lumioMsgCount++;
   if(role==='bot'&&lumioMsgCount%3===0){
@@ -2052,10 +2052,8 @@ function setLang(code,label,fc){
 var ccRole='employee';
 var ccMode='ask';
 var ccAskGreeting="Hi! I'm **LumioHR** 🍀 — ask me anything about HR in any country.\n\nNotice period in Germany? Maternity in Japan? Tap a topic below or just type your question.\n\n— LumioHR";
-var ccTopics={
-  ask:[['🇩🇪 Notice in Germany','What is the notice period in Germany?'],['🇪🇸 Bereavement in Spain','What is bereavement leave in Spain?'],['🤰 Maternity in Japan','What is maternity leave in Japan?'],['🌴 Leave in France','How much annual leave do employees get in France?']],
-  co:[['🌴 My PTO','What is my PTO entitlement?'],['🏠 Remote work','What is the remote work policy?'],['💙 Benefits','What benefits am I entitled to?'],['🔐 Security training','When must I complete security training?']]
-};
+var ccTopics={ask:[['🇩🇪 Notice in Germany','What is the notice period in Germany?'],['🇪🇸 Bereavement in Spain','What is bereavement leave in Spain?'],['🤰 Maternity in Japan','What is maternity leave in Japan?'],['🌴 Leave in France','How much annual leave do employees get in France?']],
+  co:[['🌴 My PTO','What is my PTO entitlement?'],['🏠 Remote work','What is the remote work policy?'],['💙 Benefits','What benefits am I entitled to?'],['🔐 Security training','When must I complete security training?']]};
 function ccRenderTopics(){var box=document.getElementById('cc-topics');if(!box)return;box.innerHTML=ccTopics[ccMode].map(function(t){return '<button class="topic-btn" onclick="ccAsk(\''+t[1].replace(/'/g,"\\'")+'\')">'+t[0]+'</button>';}).join('');}
 function ccSetMode(m){
   ccMode=m;
@@ -2065,7 +2063,7 @@ function ccSetMode(m){
   var roles=document.getElementById('cc-roles'),hint=document.getElementById('cc-hint');
   if(roles)roles.style.display=m==='co'?'flex':'none';
   if(hint)hint.style.display=m==='co'?'block':'none';
-  var inp=document.getElementById('cc-input');if(inp)inp.placeholder=m==='co'?'Ask <span style="color:#059669;">Lumio</span><span style="color:#10B981;">HR</span> Brain about your company...':'Ask <span style="color:#059669;">Lumio</span><span style="color:#10B981;">HR</span> anything...';
+  var inp=document.getElementById('cc-input');if(inp)inp.placeholder=m==='co'?'Ask LumioHR about your company...':'Ask LumioHR anything...';
   var foot=document.getElementById('cc-foot');if(foot)foot.innerHTML=m==='co'?'🧪 Sample company data · powered by your Company Brain · for guidance only, not legal advice':'🌍 Global HR knowledge · web-search powered · for guidance only, not legal advice';
   ccRenderTopics();
   var msgs=document.getElementById('cc-msgs');if(msgs)msgs.innerHTML='';
@@ -2098,7 +2096,7 @@ function ccAppend(role,text){
   if(role==='bot'){av.innerHTML='<span style="font-size:18px;line-height:1;">🍀</span>';}
   else{av.style.cssText='width:30px;height:30px;border-radius:50%;background:#111827;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;';av.textContent='U';}
   var bubble=document.createElement('div');bubble.className='msg-bubble';
-  bubble.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'</p><p style="margin-top:10px;">').replace(/\n/g,'<br>');
+  var html=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');bubble.innerHTML=html;
   div.appendChild(av);div.appendChild(bubble);msgs.appendChild(div);
   msgs.scrollTop=msgs.scrollHeight;
 }
@@ -2131,6 +2129,9 @@ function ccSend(){
   ccAsk(q);
 }
 (function(){ccRenderTopics();var m=document.getElementById('cc-msgs');if(m&&!m.children.length)ccAppend('bot',ccAskGreeting);})();
+
+// Initialize chat on page load
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){ccSetMode("ask");});}else{ccSetMode("ask");}
 </script>
 </body>
 </html>
