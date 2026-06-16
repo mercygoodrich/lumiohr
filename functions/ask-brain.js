@@ -73,27 +73,28 @@ exports.handler = async (event) => {
     const systemPrompt = SYSTEM_PROMPTS[role] || SYSTEM_PROMPTS.employee;
     console.log(`[ask-brain] Using ${role} system prompt`);
 
-    // 3. Query Supabase for company documents
-    console.log(`[ask-brain] Querying Supabase for company ${COMPANY_ID}`);
+    // 3. Query Supabase chunks table for company content
+    console.log(`[ask-brain] Querying Supabase chunks for company ${COMPANY_ID}`);
     let docContext = "";
     
     try {
-      const { data: docs, error } = await supabase
-        .from("documents")
-        .select("title, content")
-        .eq("company_id", COMPANY_ID);
+      const { data: chunks, error } = await supabase
+        .from("chunks")
+        .select("content")
+        .eq("company_id", COMPANY_ID)
+        .limit(20);
 
       if (error) {
         console.error("[ask-brain] Supabase error:", error);
-      } else if (docs && docs.length > 0) {
-        console.log(`[ask-brain] Found ${docs.length} documents`);
+      } else if (chunks && chunks.length > 0) {
+        console.log(`[ask-brain] Found ${chunks.length} content chunks`);
         docContext =
-          "\n\nCOMPANY POLICIES:\n" +
-          docs
-            .map((d) => `--- ${d.title || "Document"} ---\n${d.content || ""}`)
-            .join("\n\n");
+          "\n\nCOMPANY POLICIES (from knowledge base):\n" +
+          chunks
+            .map((c) => c.content || "")
+            .join("\n");
       } else {
-        console.log("[ask-brain] No documents found in Supabase");
+        console.log("[ask-brain] No chunks found in Supabase");
       }
     } catch (e) {
       console.error("[ask-brain] Supabase query failed:", e.message);
@@ -101,11 +102,11 @@ exports.handler = async (event) => {
     }
 
     // 4. Build user message with context
-    const userMessage = `${question}\n\nUse these company policies to answer:\n${
-      docContext || "[No company documents found]"
-    }\n\nIf the policies don't answer this question, research the labor law for the relevant country.`;
+    const userMessage = `${question}\n\nCompany context:\n${
+      docContext || "[No company documents found in knowledge base]"
+    }\n\nBased on the company policies above, answer the question. If the policies don't address it, explain what information would be needed.`;
 
-    console.log(`[ask-brain] Calling Claude API`);
+    console.log(`[ask-brain] Calling Claude API with ${docContext.length} chars of context`);
 
     // 5. Call Claude
     const response = await client.messages.create({
