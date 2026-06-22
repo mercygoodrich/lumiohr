@@ -10,7 +10,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-const COMPANY_ID = "2db68ac5-3e3c-4774-a194-6e1d08504384";
+// Public sample company — used by the marketing site's "sample" chat when NO access key is sent.
+const DEMO_COMPANY_ID = "2db68ac5-3e3c-4774-a194-6e1d08504384";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -38,77 +39,117 @@ const SYSTEM_PROMPTS = {
 
 exports.handler = async (event) => {
   console.log("[ask-brain] Handler called");
-  console.log("[ask-brain] Body:", event.body);
 
   if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 200,
-      headers: CORS_HEADERS,
-      body: "OK",
-    };
+    return { statusCode: 200, headers: CORS_HEADERS, body: "OK" };
   }
 
   try {
     // 1. Parse request
-    let question, role;
+    let question, role, accessKey;
     try {
       const body = JSON.parse(event.body);
       question = body.question;
       role = body.role || "employee";
-      console.log(`[ask-brain] Question: ${question}`);
-      console.log(`[ask-brain] Role: ${role}`);
+      // accept either spelling from the client
+      accessKey = body.access_key || body.accessKey || null;
+      console.log(`[ask-brain] Role: ${role} | accessKey present: ${!!accessKey}`);
     } catch (e) {
       console.error("[ask-brain] JSON parse error:", e);
       return {
         statusCode: 400,
-        headers: CORS_HEADERS,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
         body: JSON.stringify({
           error: "Invalid request format",
-          reply: "I couldn't understand your request. Please try again.",
+          reply: "I couldn't understand your request. Please try again. — LumioHR",
         }),
       };
     }
 
-    // 2. Get system prompt for role
-    const systemPrompt = SYSTEM_PROMPTS[role] || SYSTEM_PROMPTS.employee;
-    console.log(`[ask-brain] Using ${role} system prompt`);
+    if (!question || !String(question).trim()) {
+      return {
+        statusCode: 400,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reply: "Please type a question and I'll help. — LumioHR",
+        }),
+      };
+    }
 
-    // 3. Query Supabase chunks table for company content
-    console.log(`[ask-brain] Querying Supabase chunks for company ${COMPANY_ID}`);
+    // 2. Resolve WHICH company's data to use.
+    //    The browser never sends a company_id directly — it sends a secret access key,
+    //    and the SERVER decides which company that maps to. This is what keeps each
+    //    customer's data isolated: a stolen key can only ever unlock one company.
+    let companyId = DEMO_COMPANY_ID;
+    let usingDemo = true;
+
+    if (accessKey) {
+      const { data: company, error: keyErr } = await supabase
+        .from("companies")
+        .select("id")
+        .eq("access_key", accessKey)
+        .maybeSingle();
+
+      if (keyErr) {
+        console.error("[ask-brain] access-key lookup error:", keyErr.message);
+      }
+
+      if (!company) {
+        // Unknown / expired key — do NOT fall back to anyone's data.
+        console.log("[ask-brain] access key not recognized — refusing");
+        return {
+          statusCode: 403,
+          headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            reply:
+              "That access key isn't recognized. Please check the link your LumioHR contact sent you, or reach out to hello@lumio-hr.com. — LumioHR",
+          }),
+        };
+      }
+
+      companyId = company.id;
+      usingDemo = false;
+    }
+
+    console.log(
+      `[ask-brain] Using ${usingDemo ? "DEMO (sample)" : "customer"} company ${companyId}`
+    );
+
+    // 3. System prompt for role
+    const systemPrompt = SYSTEM_PROMPTS[role] || SYSTEM_PROMPTS.employee;
+
+    // 4. Query Supabase chunks for THIS company only
     let docContext = "";
-    
     try {
       const { data: chunks, error } = await supabase
         .from("chunks")
         .select("content")
-        .eq("company_id", COMPANY_ID)
+        .eq("company_id", companyId)
         .limit(20);
 
       if (error) {
-        console.error("[ask-brain] Supabase error:", error);
+        console.error("[ask-brain] Supabase chunks error:", error);
       } else if (chunks && chunks.length > 0) {
         console.log(`[ask-brain] Found ${chunks.length} content chunks`);
         docContext =
           "\n\nCOMPANY POLICIES (from knowledge base):\n" +
-          chunks
-            .map((c) => c.content || "")
-            .join("\n");
+          chunks.map((c) => c.content || "").join("\n");
       } else {
-        console.log("[ask-brain] No chunks found in Supabase");
+        console.log("[ask-brain] No chunks found for this company");
       }
     } catch (e) {
       console.error("[ask-brain] Supabase query failed:", e.message);
       docContext = "";
     }
 
-    // 4. Build user message with context
+    // 5. Build user message with context
     const userMessage = `${question}\n\nCompany context:\n${
       docContext || "[No company documents found in knowledge base]"
     }\n\nBased on the company policies above, answer the question. If the policies don't address it, explain what information would be needed.`;
 
-    console.log(`[ask-brain] Calling Claude API with ${docContext.length} chars of context`);
+    console.log(`[ask-brain] Calling Claude with ${docContext.length} chars of context`);
 
-    // 5. Call Claude
+    // 6. Call Claude
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 1500,
@@ -116,23 +157,16 @@ exports.handler = async (event) => {
       messages: [{ role: "user", content: userMessage }],
     });
 
-    console.log(`[ask-brain] Claude response received`);
-
-    // 6. Extract text from response
+    // 7. Extract text
     let reply = "";
     for (const block of response.content) {
-      if (block.type === "text") {
-        reply += block.text;
-      }
+      if (block.type === "text") reply += block.text;
     }
-
     if (!reply) {
-      reply =
-        "I wasn't able to generate a response. Please try again. — LumioHR";
+      reply = "I wasn't able to generate a response. Please try again. — LumioHR";
     }
 
-    console.log(`[ask-brain] Success - returning reply`);
-
+    console.log("[ask-brain] Success — returning reply");
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
