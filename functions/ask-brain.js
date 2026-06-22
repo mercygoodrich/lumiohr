@@ -142,10 +142,78 @@ exports.handler = async (event) => {
       docContext = "";
     }
 
+    // 4b. Pull THIS company's employee roster so answers can be personalized.
+    //     If the question names an employee, inject their (non-sensitive) record.
+    //     This is the thing a generic chatbot cannot do: policy × this specific person.
+    let employeeContext = "";
+    try {
+      const { data: emps, error: empErr } = await supabase
+        .from("employees")
+        .select("*")
+        .eq("company_id", companyId);
+
+      if (empErr) {
+        console.error("[ask-brain] employees query error:", empErr.message);
+      } else if (emps && emps.length) {
+        const ql = String(question).toLowerCase();
+        const nameOf = (e) =>
+          (e.name || e.full_name || e.fullName || e.Full_Name || e["Full Name"] || "").toString();
+
+        let match = null;
+        for (const e of emps) {
+          const full = nameOf(e).toLowerCase().trim();
+          if (!full) continue;
+          const first = full.split(/\s+/)[0];
+          if (ql.includes(full)) { match = e; break; }          // full name wins
+          if (first.length > 2 && ql.includes(first)) match = e; // else first-name match
+        }
+
+        if (match) {
+          const pick = (keys) => {
+            for (const k of keys) {
+              if (match[k] != null && String(match[k]).trim() !== "") return String(match[k]);
+            }
+            return "";
+          };
+          const name    = nameOf(match);
+          const country = pick(["country", "Country"]);
+          const title   = pick(["job_title", "title", "Job Title", "jobTitle"]);
+          const dept    = pick(["department", "Department"]);
+          const etype   = pick(["employment_type", "Employment Type", "employmentType"]);
+          const manager = pick(["manager", "Manager"]);
+          const start   = pick(["start_date", "Start Date", "startDate"]);
+
+          // NOTE: salary and email are deliberately NOT included — never sent to the model.
+          employeeContext =
+            "\n\nEMPLOYEE RECORD (use to personalize the answer):\n" +
+            `- Name: ${name}\n` +
+            (country ? `- Country: ${country}\n` : "") +
+            (title   ? `- Job title: ${title}\n` : "") +
+            (dept    ? `- Department: ${dept}\n` : "") +
+            (etype   ? `- Employment type: ${etype}\n` : "") +
+            (manager ? `- Manager: ${manager}\n` : "") +
+            (start   ? `- Start date: ${start}\n` : "");
+          console.log(`[ask-brain] matched employee: ${name}`);
+        }
+      }
+    } catch (e) {
+      console.error("[ask-brain] employees lookup failed:", e.message);
+    }
+
     // 5. Build user message with context
-    const userMessage = `${question}\n\nCompany context:\n${
-      docContext || "[No company documents found in knowledge base]"
-    }\n\nBased on the company policies above, answer the question. If the policies don't address it, explain what information would be needed.`;
+    const userMessage =
+      `${question}\n\n` +
+      `Company policies:\n${docContext || "[No company documents found in knowledge base]"}` +
+      `${employeeContext}\n\n` +
+      `Instructions: Answer using the company policies above. ` +
+      `If an EMPLOYEE RECORD is included, tailor the answer to that specific person — ` +
+      `for example, apply the policy for their country and reference their situation. ` +
+      `Never state, list, or hint at any employee's salary or email address. ` +
+      `IMPORTANT — leave balances: you do NOT have access to anyone's used or remaining leave. ` +
+      `Never invent, estimate, or state how many days a person has "used", "left", "remaining", or "available". ` +
+      `If asked about a remaining balance, give the annual entitlement from the policy, then say the current ` +
+      `balance should be confirmed with HR — LumioHR will show live balances once the company's HR system is connected. ` +
+      `If the policies don't address the question, explain what information would be needed.`;
 
     console.log(`[ask-brain] Calling Claude with ${docContext.length} chars of context`);
 
