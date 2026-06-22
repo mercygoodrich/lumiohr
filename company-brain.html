@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Company Brain · LumioHR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--emerald:#059669;--bright:#10B981;--mint:#D1FAE5;--navy:#111827;--cream:#FBF6EE;--ink:#1A2A3A;--line:#EADFCE;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;}
+  .top{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;}
+  .logo .a{color:var(--emerald);}.logo .b{color:#fff;}
+  .top .meta{font-size:12px;color:rgba(255,255,255,.65);}
+  .wrap{max-width:680px;margin:0 auto;padding:22px 16px 60px;}
+
+  /* gate */
+  .gate{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 26px;margin-top:30px;box-shadow:0 16px 44px rgba(20,30,46,.08);text-align:center;}
+  .gate h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;color:var(--navy);margin-bottom:8px;}
+  .gate p{font-size:14px;color:#5f6f63;margin-bottom:18px;}
+  .gate input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;font-family:inherit;font-size:15px;outline:none;}
+  .gate input:focus{border-color:var(--emerald);}
+  .gate button{margin-top:12px;width:100%;background:var(--emerald);color:#fff;border:none;border-radius:12px;padding:13px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;}
+  .gate .err{color:#b91c1c;font-size:13px;margin-top:10px;min-height:18px;}
+
+  /* chat */
+  .app{display:none;}
+  .roles{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
+  .role{flex:1;min-width:100px;border:1.5px solid var(--line);background:#fff;border-radius:11px;font-family:inherit;font-weight:700;font-size:13px;color:#5f6f63;padding:11px;cursor:pointer;transition:.15s;}
+  .role.on{background:var(--emerald);border-color:var(--emerald);color:#fff;}
+  .hint{font-size:12.5px;color:#5f6f63;font-style:italic;margin:8px 2px 0;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-top:14px;box-shadow:0 16px 44px rgba(20,30,46,.08);}
+  .msgs{padding:16px;display:flex;flex-direction:column;gap:12px;min-height:300px;max-height:60vh;overflow-y:auto;background:#FCFBF8;}
+  .msg{display:flex;gap:9px;max-width:90%;}
+  .msg.me{margin-left:auto;flex-direction:row-reverse;}
+  .av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .av.me{background:var(--navy);color:#fff;font-size:11px;font-weight:700;}
+  .bub{padding:11px 14px;border-radius:13px;font-size:14px;line-height:1.6;}
+  .bub.bot{background:#fff;border:1px solid var(--line);border-radius:13px 13px 13px 4px;color:var(--ink);}
+  .bub.me{background:var(--navy);color:#fff;border-radius:13px 13px 4px 13px;}
+  .inbar{display:flex;gap:8px;padding:11px 12px;border-top:1px solid var(--line);background:#fff;}
+  .inbar input{flex:1;border:1.5px solid var(--line);border-radius:22px;padding:11px 15px;font-family:inherit;font-size:14px;outline:none;}
+  .inbar input:focus{border-color:var(--emerald);}
+  .send{width:44px;height:44px;border-radius:50%;background:var(--emerald);border:none;color:#fff;font-size:17px;cursor:pointer;flex-shrink:0;}
+  .send:disabled{opacity:.5;cursor:default;}
+  .foot{text-align:center;font-size:12px;color:#8a988c;margin-top:16px;}
+  .foot a{color:#8a988c;cursor:pointer;text-decoration:underline;}
+  .typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bright);margin:0 1px;animation:b 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;}.typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes b{0%,60%,100%{opacity:.3;}30%{opacity:1;}}
+</style>
+</head>
+<body>
+  <div class="top">
+    <span class="logo"><span class="a">Lumio</span><span class="b">HR</span></span>
+    <span class="meta">Your Company Brain</span>
+  </div>
+
+  <div class="wrap">
+    <!-- ACCESS GATE -->
+    <div class="gate" id="gate">
+      <h1>Welcome to your Company Brain 💚</h1>
+      <p>Enter the access key your LumioHR contact sent you.</p>
+      <input id="key-input" placeholder="Access key" autocomplete="off">
+      <button onclick="saveKey()">Unlock my Brain →</button>
+      <div class="err" id="key-err"></div>
+    </div>
+
+    <!-- CHAT APP -->
+    <div class="app" id="app">
+      <div class="roles" id="roles">
+        <button class="role on" data-role="employee" onclick="setRole(this)">👤 Employee</button>
+        <button class="role" data-role="manager" onclick="setRole(this)">👔 Manager</button>
+        <button class="role" data-role="admin" onclick="setRole(this)">👩‍💼 HR / Admin</button>
+      </div>
+      <div class="hint" id="hint">Employee — ask about your rights, leave, benefits, and policies.</div>
+
+      <div class="card">
+        <div class="msgs" id="msgs"></div>
+        <div class="inbar">
+          <input id="q" placeholder="Ask about your company's policies…" onkeydown="if(event.key==='Enter')ask()">
+          <button class="send" id="send" onclick="ask()">➤</button>
+        </div>
+      </div>
+      <div class="foot">
+        For guidance only · Not legal advice · <a onclick="changeKey()">Change access key</a>
+      </div>
+    </div>
+  </div>
+
+<script>
+  var ENDPOINT = "https://lumio-hr.com/.netlify/functions/ask-brain";
+  var KEYNAME  = "lumio_access_key";
+  var role = "employee";
+  var hints = {
+    employee:"Employee — ask about your rights, leave, benefits, and policies.",
+    manager:"Manager — approvals, compliance, and team guidance.",
+    admin:"HR / Admin — spot gaps and manage policies."
+  };
+  var greetings = {
+    employee:"Hi! I'm **LumioHR** 💚 — your company's HR brain.\n\nAsk me about your **PTO, benefits, remote work, leave, or rights**, and I'll explain your company's policy in plain language.\n\nWhat would you like to know?",
+    manager:"Hi! I'm **LumioHR** 💚 — here to help you manage your team.\n\nAsk me about **approvals, compliance, or team policies**, and I'll flag anything that needs your attention.",
+    admin:"Hi! I'm **LumioHR** 💚 — your HR co-pilot.\n\nAsk me to **check policies, spot gaps, or compare against the law**, and I'll help you stay compliant."
+  };
+
+  /* ---------- markdown renderer (clean headings, bold, bullets, tables) ---------- */
+  function ccMd(text){
+    function inline(s){
+      return s
+        .replace(/\*\*(.+?)\*\*/g,'<strong style="color:#059669;font-weight:700;">$1</strong>')
+        .replace(/(^|[^*])\*(?!\*)([^*]+?)\*(?!\*)/g,'$1<em style="color:#5f6f63;">$2</em>')
+        .replace(/`([^`]+?)`/g,'<code style="background:#F4ECDE;color:#9a3412;padding:1px 5px;border-radius:4px;font-size:.92em;">$1</code>');
+    }
+    var lines=String(text).split('\n'),out=[],i=0;
+    while(i<lines.length){
+      var line=lines[i];
+      if(/^\s*([-*_])\1{2,}\s*$/.test(line)){out.push('<div style="border-top:1px solid #E6E0D4;margin:14px 0;"></div>');i++;continue;}
+      if(/^\s*\|.*\|\s*$/.test(line) && i+1<lines.length && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i+1])){
+        var head=line.trim().replace(/^\||\|$/g,'').split('|').map(function(c){return c.trim();});
+        i+=2;var rows=[];
+        while(i<lines.length && /^\s*\|.*\|\s*$/.test(lines[i])){rows.push(lines[i].trim().replace(/^\||\|$/g,'').split('|').map(function(c){return c.trim();}));i++;}
+        var th=head.map(function(c){return '<th style="text-align:left;padding:7px 12px;border-bottom:2px solid #D1FAE5;color:#059669;font-weight:700;font-size:13px;">'+inline(c)+'</th>';}).join('');
+        var tb=rows.map(function(r){return '<tr>'+r.map(function(c){return '<td style="padding:7px 12px;border-bottom:1px solid #EAF3EE;font-size:13.5px;">'+inline(c)+'</td>';}).join('')+'</tr>';}).join('');
+        out.push('<table style="border-collapse:collapse;margin:12px 0;width:100%;"><thead><tr>'+th+'</tr></thead><tbody>'+tb+'</tbody></table>');
+        continue;
+      }
+      var h=line.match(/^\s*(#{1,4})\s+(.*)$/);
+      if(h){var lvl=h[1].length;var size=lvl<=1?'17px':lvl===2?'15.5px':'14px';
+        out.push('<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:800;color:#059669;font-size:'+size+';margin:14px 0 6px;line-height:1.3;">'+inline(h[2])+'</div>');i++;continue;}
+      if(/^\s*\d+\.\s+/.test(line)){var oi=[],n=1;
+        while(i<lines.length && /^\s*\d+\.\s+/.test(lines[i])){oi.push('<li style="margin:5px 0;padding-left:24px;position:relative;"><span style="position:absolute;left:0;color:#059669;font-weight:700;">'+(n++)+'.</span>'+inline(lines[i].replace(/^\s*\d+\.\s+/,''))+'</li>');i++;}
+        out.push('<ol style="margin:8px 0;padding:0;list-style:none;">'+oi.join('')+'</ol>');continue;}
+      if(/^\s*[-*]\s+/.test(line)){var it=[];
+        while(i<lines.length && /^\s*[-*]\s+/.test(lines[i])){it.push('<li style="margin:5px 0;padding-left:20px;position:relative;"><span style="position:absolute;left:0;color:#10B981;font-weight:700;">\u2022</span>'+inline(lines[i].replace(/^\s*[-*]\s+/,''))+'</li>');i++;}
+        out.push('<ul style="margin:8px 0;padding:0;list-style:none;">'+it.join('')+'</ul>');continue;}
+      if(line.trim()===''){out.push('<div style="height:8px;"></div>');i++;continue;}
+      out.push('<div style="margin:5px 0;line-height:1.65;">'+inline(line)+'</div>');i++;
+    }
+    return out.join('');
+  }
+
+  /* ---------- gate ---------- */
+  function saveKey(){
+    var k=(document.getElementById('key-input').value||'').trim();
+    if(!k){document.getElementById('key-err').textContent='Please enter your access key.';return;}
+    localStorage.setItem(KEYNAME,k);
+    showApp();
+  }
+  function changeKey(){
+    localStorage.removeItem(KEYNAME);
+    document.getElementById('app').style.display='none';
+    document.getElementById('gate').style.display='block';
+    document.getElementById('key-input').value='';
+    document.getElementById('key-err').textContent='';
+  }
+  function getKey(){return localStorage.getItem(KEYNAME);}
+
+  function showApp(){
+    document.getElementById('gate').style.display='none';
+    document.getElementById('app').style.display='block';
+    var m=document.getElementById('msgs');
+    if(!m.children.length) append('bot',greetings[role]);
+  }
+
+  /* ---------- chat ---------- */
+  function setRole(btn){
+    role=btn.getAttribute('data-role');
+    var els=document.getElementsByClassName('role');
+    for(var i=0;i<els.length;i++)els[i].classList.remove('on');
+    btn.classList.add('on');
+    document.getElementById('hint').textContent=hints[role];
+    document.getElementById('msgs').innerHTML='';
+    append('bot',greetings[role]);
+  }
+
+  function append(who,text){
+    var msgs=document.getElementById('msgs');
+    var row=document.createElement('div');row.className='msg'+(who==='me'?' me':'');
+    var av=document.createElement('div');av.className='av'+(who==='me'?' me':'');
+    av.innerHTML=who==='me'?'U':'💚';
+    var bub=document.createElement('div');bub.className='bub '+(who==='me'?'me':'bot');
+    bub.innerHTML=who==='me'?String(text).replace(/</g,'&lt;'):ccMd(text);
+    row.appendChild(av);row.appendChild(bub);msgs.appendChild(row);
+    msgs.scrollTop=msgs.scrollHeight;
+    return bub;
+  }
+
+  function typing(){
+    var msgs=document.getElementById('msgs');
+    var row=document.createElement('div');row.className='msg';row.id='typing-row';
+    row.innerHTML='<div class="av">💚</div><div class="bub bot typing"><span></span><span></span><span></span></div>';
+    msgs.appendChild(row);msgs.scrollTop=msgs.scrollHeight;
+  }
+  function stopTyping(){var t=document.getElementById('typing-row');if(t)t.remove();}
+
+  function ask(){
+    var input=document.getElementById('q');
+    var q=(input.value||'').trim();if(!q)return;
+    input.value='';
+    append('me',q);
+    document.getElementById('send').disabled=true;
+    typing();
+    fetch(ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question:q,role:role,access_key:getKey()})
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+      stopTyping();
+      append('bot',(d&&d.reply)?d.reply:"I couldn't reach LumioHR just now. Please try again. — LumioHR");
+      document.getElementById('send').disabled=false;
+    })
+    .catch(function(){
+      stopTyping();
+      append('bot',"I couldn't reach LumioHR just now. Please try again. — LumioHR");
+      document.getElementById('send').disabled=false;
+    });
+  }
+
+  /* ---------- boot ---------- */
+  (function(){ if(getKey()) showApp(); })();
+</script>
+</body>
+</html>
